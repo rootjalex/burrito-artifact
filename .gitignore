@@ -13,5 +13,7 @@ imgs
 
 # Don't include virtual environment
 venv
+**/__pycache__/
 
 .vscode
+.DS_Store
