@@ -18,37 +18,6 @@ def get_data(filename):
     parsed = parse_file(filename, labels)
     return parsed
 
-def get_fusion_data(filename):
-    labels = ["matrix_name", "benchmark_name", "tool", "time"]
-    parsed = parse_file(filename, labels)
-    cons = dict()
-    # Consolidate data
-    for p in parsed:
-        matrix_name = p["matrix_name"]
-        benchmark_name = p["benchmark_name"]
-        tool_name = p["tool"]
-        t = p["time"]
-        if not (matrix_name in cons):
-            cons[matrix_name] = dict()
-        if not(benchmark_name in cons[matrix_name]):
-            cons[matrix_name][benchmark_name] = dict()
-        cons[matrix_name][benchmark_name][tool_name] = t
-    # Flatten into list
-    l = list()
-    for k, v in cons.items():
-        for b, t in v.items():
-            t_burr = t["burrito"]
-            # if "scipy" not in t:
-            #     continue
-            t_scipy = t["scipy"]
-            # if "burrito_unfused" not in t:
-            #     continue
-                # print(k, v)
-            t_burr_unfused = t["burrito_unfused"]
-            f = { "matrix_name": k, "benchmark_name": b, "t_burrito" : t_burr, "t_scipy" : t_scipy, "t_unfused" : t_burr_unfused }
-            l.append(f)
-    return l
-
 def scatter_plot(data, pngname, benchmark_name, title, ax, suitesparse_dict, compare, ylabel, _key = "Sparsity", yticks = [1, 2, 4, 8, 16, 32, 64, 128], color = "#1f77b4"):
     benchmark_data = list(filter(lambda x: x["benchmark_name"] == benchmark_name, data))
 
@@ -252,11 +221,13 @@ def time_scatter_plot_fusion(data, benchmark_name, title, ax, suitesparse_dict, 
     benchmark_data.sort(key=lambda x: float(suitesparse_dict[x["matrix_name"]][_key]))
     burrito_timing = list(map(lambda x: float(x["t_burrito"]), benchmark_data))
     scipy_timing = list(map(lambda x: float(x["t_scipy"]), benchmark_data))
-    unfused_timing = list(map(lambda x: float(x["t_unfused"]), benchmark_data))
+    # unfused_timing = list(map(lambda x: float(x["t_unfused"]), benchmark_data))
+    unfused_timing = list(map(lambda x: float(x["t_pydata"]), benchmark_data))
     key_data = list(map(lambda x: float(suitesparse_dict[x["matrix_name"]][_key]), benchmark_data))
 
     scipy_speedups = list(map(lambda x: float(x["t_scipy"]) / (float(x["t_burrito"]) if float(x["t_burrito"]) != 0 else FLOATMIN), benchmark_data))
-    unfused_speedups = list(map(lambda x: float(x["t_unfused"]) / (float(x["t_burrito"]) if float(x["t_burrito"]) != 0 else FLOATMIN), benchmark_data))
+    # unfused_speedups = list(map(lambda x: float(x["t_unfused"]) / (float(x["t_burrito"]) if float(x["t_burrito"]) != 0 else FLOATMIN), benchmark_data))
+    unfused_speedups = list(map(lambda x: float(x["t_pydata"]) / (float(x["t_burrito"]) if float(x["t_burrito"]) != 0 else FLOATMIN), benchmark_data))
     scipy_gmean = scipy.stats.gmean(scipy_speedups)
     unfused_gmean = scipy.stats.gmean(unfused_speedups)
     scipy_min = min(scipy_speedups)
@@ -325,7 +296,6 @@ if __name__ == "__main__":
         time_scatter_plot(data, p[0], p[1], ax, suitesparse_dict, _key="nnz")
 
     # fusion
-    data = get_fusion_data("/Users/ajroot/projects/burrito-benchmarking/results-fusion/full.csv")
     fig = plt.figure()
     ax = fig.add_subplot(111)
     time_scatter_plot_fusion(data, "dv_sum_vstack_csr_csr_mul_dv", "D = sum(vstack(CSR, CSR) * D)", ax, suitesparse_dict, _key = "nnz")
