@@ -1,0 +1,17 @@
+# Don't include build files
+pyburrito/build
+io_coo/build
+
+# Don't include generated files
+pyburrito/*.h
+!pyburrito/runtime.h
+!pyburrito/unfused.h
+
+# Don't include results files
+results
+imgs
+
+# Don't include virtual environment
+venv
+
+.vscode
