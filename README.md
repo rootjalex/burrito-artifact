@@ -1,6 +1,6 @@
 # Burrito
 
-## Build
+## Installation
 
 #### Set up virtual environment
 First, make a Python virtual environment:
@@ -12,6 +12,16 @@ pip install -r requirements.txt
 
 #### Install Racket
 You will need to [install racket](https://racket-lang.org/download/) to run the Burrito compiler.
+
+#### Install CMake
+You will also need to install CMake. On MacOS, install via [brew](https://brew.sh):
+```bash
+brew install cmake
+```
+Note: We built and tested with version 3.29.2, but any CMake version above 3.27 should work for building the Python bindings.
+
+
+## Build
 
 #### Run compiler on benchmark expressions
 Next, run the Burrito compiler to generate C++ code (generated kernels will appear in `pyburrito`)
@@ -34,6 +44,8 @@ cd ../io_coo
 cmake -S . -B build
 cmake --build build
 ```
+
+## Test
 
 #### Download Suitesparse
 Download the real-valued Suitesparse matrices (NOTE: this will take a long time, and a lot of bandwidth!):
