@@ -1,6 +1,8 @@
 # Burrito
 
 ## Build
+
+#### Set up virtual environment
 First, make a Python virtual environment:
 ```bash
 python3 -m venv venv
@@ -8,13 +10,16 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-TODO: need to give commands for installing racket!
+#### Install Racket
+You will need to [install racket](https://racket-lang.org/download/) to run the Burrito compiler.
 
+#### Run compiler on benchmark expressions
 Next, run the Burrito compiler to generate C++ code (generated kernels will appear in `pyburrito`)
 ```bash
 racket burrito/benchmarks.rkt
 ```
 
+#### Build Python extensions
 Next, build the [nanobind](https://nanobind.readthedocs.io/en/latest/)-enabled Python package.
 ```bash
 cd pyburrito
@@ -30,6 +35,7 @@ cmake -S . -B build
 cmake --build build
 ```
 
+#### Download Suitesparse
 Download the real-valued Suitesparse matrices (NOTE: this will take a long time, and a lot of bandwidth!):
 ```bash
 cd ../suitesparse
@@ -55,7 +61,6 @@ python3 partition_testing.py 0 1 &> ../results/out.txt
 ```
 
 #### Parallel Testing
-
 On a machine with many nodes, and slurm, the following testing scripts will attempt to balance test matrices across machines. Replace `<N>` with the number of parallel jobs to launch (e.g. 16).
 ```bash
 cd scripts
@@ -65,7 +70,6 @@ chmod +x run_partition.sh
 ```
 
 #### Generating Plots
-
 To generate the plots from the paper (e.g. Fig 24, Fig 25, Fig 26), run the following commands:
 ```bash
 cd .. # now in root project directory
@@ -73,5 +77,3 @@ mkdir imgs
 python3 graph/scatter_plot.py
 ```
 The generated images will be in the `imgs` directory.
-
-
