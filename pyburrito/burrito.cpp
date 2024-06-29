@@ -75,9 +75,9 @@ NB_MODULE(burrito, m) {
     m.def("csr_slice_1d_csr", &csr_slice_1d_csr<uint32_t, float>);
     // portable
     m.def("coo_split_cv", &coo_split_cv<uint32_t, uint32_t, float>);
-    m.def("coo_split_cv64to32", &coo_split_cv<uint64_t, uint32_t, float>);
+    m.def("coo_split_cv64to32", &coo_split_cv<uint32_t, uint64_t, float>);
     m.def("csr_split_cv", &csr_split_cv<uint32_t, uint32_t, float>);
-    m.def("csr_split_cv64to32", &csr_split_cv<uint64_t, uint32_t, float>);
+    m.def("csr_split_cv64to32", &csr_split_cv<uint32_t, uint64_t, float>);
     m.def("csr_hstack_coo_coo", &csr_hstack_coo_coo<uint32_t, float>);
     m.def("coo_vstack_csr_csr", &coo_vstack_csr_csr<uint32_t, float>);
     m.def("coo_hstack_csr_csr", &coo_hstack_csr_csr<uint32_t, float>);

@@ -25,8 +25,8 @@
 
   (when (expr:contains-reshape? expr)
     (cpp:set-index_t! "uint64_t"))
-  (define in_index_t (if (expr:contains-reshape? expr) "in_index_t" "index_t"))
-  (define out_index_t (if (expr:contains-reshape? expr) "out_index_t" "index_t"))
+  (define small_index_t (if (expr:contains-reshape? expr) "small_index_t" "index_t"))
+  (define large_index_t (if (expr:contains-reshape? expr) "large_index_t" "index_t"))
 
   (define cin (cin:codegen kernel))
   ; (displayln (cin:print cin))
@@ -42,30 +42,30 @@
   (define outfile (open-output-file filename #:exists 'replace))
   (displayln "#pragma once" outfile)
   (displayln "#include \"runtime.h\"" outfile)
-  ; TODO: detect reshapes, use in_index_t and out_index_t!
+  ; Detect reshapes, use small_index_t and large_index_t if necessary.
   (if (expr:contains-reshape? expr)
-    (displayln "\ntemplate<typename in_index_t, typename out_index_t, typename value_t>" outfile)
+    (displayln "\ntemplate<typename small_index_t, typename large_index_t, typename value_t>" outfile)
     (displayln "\ntemplate<typename index_t, typename value_t>" outfile))
-  (displayln (format "~a ~a(~a) {" (make-runtime-type array out_index_t) fname (make-arg-string array-args scalar-args array in_index_t)) outfile)
+  (displayln (format "~a ~a(~a) {" (make-runtime-type array small_index_t large_index_t) fname (make-arg-string array-args scalar-args array small_index_t large_index_t)) outfile)
   ; Extract sizes from each tensor argument.
   ; TODO: don't do this for dense arrays.
   (for-each (lambda (a) (displayln (extract-params a) outfile)) (filter (lambda (array) (not (array-is-dense? array))) array-args))
   (displayln "" outfile)
-  (for-each (lambda (a) (displayln (extract-compressed-arrays a in_index_t) outfile)) array-args)
+  (for-each (lambda (a) (displayln (extract-compressed-arrays a small_index_t large_index_t) outfile)) array-args)
   ; Define each size as a computation.
   (displayln (codegen-array-sizes expr) outfile)
   (displayln "" outfile)
   (displayln (codegen-compute-nnz expr cfir) outfile)
   (displayln "" outfile)
   ; allocate output array.
-  (displayln (codegen-allocate-output array "ret_nnz" out_index_t) outfile)
+  (displayln (codegen-allocate-output array "ret_nnz" small_index_t large_index_t) outfile)
   ; set up output iterators
-  (displayln (codegen-output-iterators array out_index_t) outfile)
+  (displayln (codegen-output-iterators array large_index_t) outfile)
   (displayln "" outfile)
   ; Print the actual code.
   (displayln (cpp:_print-stmt ccode "  ") outfile)
   ; Print the return statement.
-  (displayln (codegen-return-output array out_index_t) outfile)
+  (displayln (codegen-return-output array small_index_t large_index_t) outfile)
   (displayln "}" outfile)
   (close-output-port outfile))
 
@@ -80,18 +80,19 @@
       (list (format "  const uint64_t ~a_nnz = ~a.data.shape(0);" name name)))
     "\n"))
 
-(define (extract-compressed-arrays array index_t)
+(define (extract-compressed-arrays array small_index_t large_index_t)
   (define name (Array-name array))
   (define f (Array-format array))
-  (define idx_type (format "const ~a *__restrict" index_t))
+  (define small_idx_type (format "const ~a *__restrict" small_index_t))
+  (define large_idx_type (format "const ~a *__restrict" large_index_t))
   (define data_type "const value_t *__restrict")
   (cond
     [(is-csr? f)
-      (format "  ~a ~a = ~a.indptr.data();\n  ~a ~a = ~a.indices.data();\n  ~a ~a_data = ~a.data.data();\n" idx_type (get-level-name array (array-idx array 0)) name idx_type (get-level-name array (array-idx array 1)) name data_type name name)]
+      (format "  ~a ~a = ~a.indptr.data();\n  ~a ~a = ~a.indices.data();\n  ~a ~a_data = ~a.data.data();\n" small_idx_type (get-level-name array (array-idx array 0)) name small_idx_type (get-level-name array (array-idx array 1)) name data_type name name)]
     [(is-coo? f)
-      (format "  ~a ~a = ~a.row.data();\n  ~a ~a = ~a.col.data();\n  ~a ~a_data = ~a.data.data();\n" idx_type (get-level-name array (array-idx array 0)) name idx_type (get-level-name array (array-idx array 1)) name data_type name name)]
+      (format "  ~a ~a = ~a.row.data();\n  ~a ~a = ~a.col.data();\n  ~a ~a_data = ~a.data.data();\n" small_idx_type (get-level-name array (array-idx array 0)) name small_idx_type (get-level-name array (array-idx array 1)) name data_type name name)]
     [(is-cvector? f)
-      (format "  const uint64_t ~A_pos[2] = {0, ~a_nnz};\n  ~a ~a = ~a.indices.data();\n  ~a ~a_data = ~a.data.data();\n" name name idx_type (get-level-name array (array-idx array 0)) name data_type name name)]
+      (format "  const uint64_t ~A_pos[2] = {0, ~a_nnz};\n  ~a ~a = ~a.indices.data();\n  ~a ~a_data = ~a.data.data();\n" name name large_idx_type (get-level-name array (array-idx array 0)) name data_type name name)]
     [(is-dvector? f)
       (format "  ~a ~a_data = ~a.data();\n" data_type name name)]
     ; TODO: handle general case (need general runtime type, or to codegen runtime type).
@@ -117,21 +118,21 @@
   ; TODO: what about duplicates?
   (filter-map (lambda (elem) (and (arith:Variable? elem) (arith:Variable-name elem))) (gather-args expr)))
 
-(define (make-runtime-type array index_t)
+(define (make-runtime-type array small_index_t large_index_t)
   (cond
     [(is-scalar-array? array) (format "value_t")]
-    [(is-csr? (Array-format array)) (format "CSR<~a, value_t>" index_t)]
-    [(is-coo? (Array-format array)) (format "COO<~a, value_t>" index_t)]
-    [(is-cvector? (Array-format array)) (format "CVector<~a, value_t>" index_t)]
+    [(is-csr? (Array-format array)) (format "CSR<~a, value_t>" small_index_t)]
+    [(is-coo? (Array-format array)) (format "COO<~a, value_t>" small_index_t)]
+    [(is-cvector? (Array-format array)) (format "CVector<~a, value_t>" large_index_t)]
     [(is-dvector? (Array-format array)) "nVector<value_t>"]
     ; TODO: handle general case.
     [else (error (format "unrecognized runtime format in C++ codegen: ~a" array))]))
 
-(define (make-arg-string array-args scalar-args out-array index_t)
+(define (make-arg-string array-args scalar-args out-array small_index_t large_index_t)
   (define (make-array-str array)
-    (format "~a &~a" (make-runtime-type array index_t) (Array-name array)))
+    (format "~a &~a" (make-runtime-type array small_index_t large_index_t) (Array-name array)))
   (define (make-scalar-str name)
-    (format "const ~a ~a" index_t name))
+    (format "const ~a ~a" small_index_t name))
   (string-join
     (append
       (map (lambda (array) (string-append "const " (make-array-str array))) array-args)
@@ -195,9 +196,10 @@
     (format "  const uint64_t ret_nnz = ~a;" (compute-nnz expr))
     (format "  uint64_t ret_nnz = 0; {\n~a\n}\n" (cpp:_print-stmt (cpp:codegen (cfir:repl-assign-with-incr cfir "ret_nnz") (mutable-set) #f) "  "))))
 
-(define (codegen-allocate-output array nnz index_t)
+(define (codegen-allocate-output array nnz small_index_t large_index_t)
   (define name (Array-name array))
   (define f (Array-format array))
+  (define index_t (if (is-cvector? (Array-format array)) large_index_t small_index_t))
   (define idx_type (format "~a *__restrict" index_t))
   (define data_type "value_t *__restrict")
   (define (helper idx i)
@@ -223,7 +225,7 @@
       (array-idxs array))
     "\n"))
 
-(define (codegen-return-output array index_t)
+(define (codegen-return-output array small_index_t large_index_t)
   (let ([modes (Format-modes (Array-format array))])
     (if (array-is-dense? array)
       ; Fully dense arrays just use nanobind's numpy interface
@@ -247,7 +249,7 @@
       ; Sparse arrays must use our runtime types.
       (string-append
         "  return "
-        (make-runtime-type array index_t)
+        (make-runtime-type array small_index_t large_index_t)
         "("
         (string-join
           (map (lambda (idx) (get-level-name array idx)) modes)
