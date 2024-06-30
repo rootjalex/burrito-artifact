@@ -6319,5 +6319,5 @@ real_matrices_sorted = ["b1_ss.mtx",
   "stokes.mtx",
   "nlpkkt200.mtx",
   "nlpkkt240.mtx",
-  "MOLIERE_2016.mtx",
+  # "MOLIERE_2016.mtx", # too large to test
 ]

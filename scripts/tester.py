@@ -169,7 +169,7 @@ class Tester:
                     burr_t = min(burr_t, t1 - t0)
         except Exception as e:
             burr_t = TIMEOUT_TIME
-            print("caught burrito timeout", e)
+            # print("caught burrito timeout", e)
         # print(burr_t, flush=True)
 
         gc.collect()
@@ -188,7 +188,7 @@ class Tester:
                     scipy_t = min(scipy_t, t1 - t0)
         except Exception as e:
             scipy_t = TIMEOUT_TIME
-            print("caught scipy timeout")
+            # print("caught scipy timeout")
 
         # print(scipy_t, flush=True)
         gc.collect()
