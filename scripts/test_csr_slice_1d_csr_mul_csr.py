@@ -33,7 +33,7 @@ def process_burr_unfused(matrix):
     return process_burr(matrix)
 
 def f_burr_unfused(m0, m1):
-    return burrito.csr_slice_1d_csr_mul_csr_unfused(m0, sN, eN, rN, m1)
+    return burrito.csr_slice_1d_csr_mul_csr_unfused(m0, m1, sN, eN, rN)
 
 def process_scipy(matrix):
     return split_matrix(matrix)
@@ -50,7 +50,7 @@ def f_equals(b, s, p):
 
 if __name__ == "__main__":
     tests = [
-        tester.Tester("csr_slice_1d_csr_mul_csr", "csr", process_burr, f_burrito, process_scipy, f_scipy, process_burr_unfused, f_burr_unfused, f_equals),
+        tester.Tester("csr_slice_1d_csr_mul_csr", "csr", process_burr, f_burrito, process_scipy, f_scipy, process_burr_unfused, f_burr_unfused, f_equals, is_unfused=True),
     ]
 
     tester.run_partition(10, 0, 1, tests)

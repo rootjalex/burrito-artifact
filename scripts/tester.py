@@ -75,64 +75,8 @@ def flat_map(f, xs):
             out.append(o)
     return out
 
-# def run_test(filenames, formats, iters, process_burr, f_burrito, process_scipy, f_scipy, process_pydata, f_pydata, f_equals):
-#     matrices = tuple(map(lambda x: construct_matrix(x[0], x[1]), zip(filenames, formats)))
-
-#     burr_matrices = tuple(flat_map(process_burr, matrices))
-#     pydata_matrices = tuple(flat_map(process_pydata, matrices))
-#     scipy_matrices = tuple(flat_map(process_scipy, matrices))
-
-#     # print("testing burrito...")
-#     burr_t = float('inf')
-#     burr_out = f_burrito(*burr_matrices)
-#     for _ in range(iters):
-#         t0 = time.time()
-#         burr_out = f_burrito(*burr_matrices)
-#         t1 = time.time()
-#         burr_t = min(burr_t, t1 - t0)
-
-#     # print("testing scipy...")
-#     scipy_t = float('inf')
-#     scipy_out = f_scipy(*scipy_matrices)
-#     for _ in range(iters):
-#         t0 = time.time()
-#         scipy_out = f_scipy(*scipy_matrices)
-#         t1 = time.time()
-#         scipy_t = min(scipy_t, t1 - t0)
-
-#     # print("testing pydata...")
-#     pydata_t = float('inf')
-#     pydata_out = f_pydata(*pydata_matrices)
-#     for _ in range(iters):
-#         t0 = time.time()
-#         pydata_out = f_pydata(*pydata_matrices)
-#         t1 = time.time()
-#         pydata_t = min(pydata_t, t1 - t0)
-
-#     assert(f_equals(burr_out, scipy_out, pydata_out))
-#     # assert(burr_b.format == scipy_b.format)
-#     # assert((burr_b != scipy_b).nnz == 0)
-#     # assert(pydata_b.format == scipy_b.format)
-#     # assert((pydata_b != scipy_b).nnz == 0)
-#     print(f"{scipy_t / burr_t},{pydata_t / burr_t},{burr_t},{scipy_t},{pydata_t}")
-
-
-# def run(count, format, process_burr, f_burrito, process_scipy, f_scipy, process_pydata, f_pydata, f_equals):
-#     # matrices = suitesparse_benchmarks.matrices[2780:]
-#     matrices = ["GAP-twitter.mtx"]
-
-#     path = paths.SUITESPARSE_PATH
-#     assert(path)
-#     if path[-1] == "/":
-#         path = path[:-1]
-
-#     for name in matrices:
-#         print(f"{name},", end="")
-#         fullname = f"{path}/{name}"
-#         run_test((fullname,), (format,), count, process_burr, f_burrito, process_scipy, f_scipy, process_pydata, f_pydata, f_equals)
-
 class Tester:
-    def __init__(self, name, input_format, process_burr, f_burrito, process_scipy, f_scipy, process_pydata, f_pydata, f_equals):
+    def __init__(self, name, input_format, process_burr, f_burrito, process_scipy, f_scipy, process_pydata, f_pydata, f_equals, is_unfused=False):
         self.name = name
         self.input_format = input_format
         self.process_burr = process_burr
@@ -142,6 +86,7 @@ class Tester:
         self.process_pydata = process_pydata
         self.f_pydata = f_pydata
         self.f_equals = f_equals
+        self.is_unfused = is_unfused
 
     def run_test(self, matrix_name, A, iters):
         print(f"{matrix_name},{self.name},", end="", flush=True)
@@ -195,7 +140,7 @@ class Tester:
 
         # print("testing pydata...", flush=True)
         pydata_t = float('inf')
-        if ("slice_1d" in self.name and A.nnz >= 7031999):
+        if (not self.is_unfused) and ("slice_1d" in self.name and A.nnz >= 7031999):
             # these larger matrices just absolutely breaks pydata,
             # and the timeout code doesn't work on it, due to some
             # weird numba.jit code.
@@ -221,7 +166,7 @@ class Tester:
             except Exception as e:
                 # pydata is a little buggy, not sure what to do here...
                 pydata_t = TIMEOUT_TIME + 1
-            # print(f"Exception: {e}")
+                # print(f"Exception: {e}")
     
         # print(pydata_t, flush=True)
 
@@ -303,25 +248,6 @@ def run_partition(count, k, m, tests):
 
         for test in tests:
             test.run_test(matrix_name, A, count)
-
-# def run_matrix(count, k, test, idx):
-#     # assert(k < m and k >= 0)
-#     # n = len(suitesparse_benchmarks.real_matrices)
-#     # Take every mth value starting at index k.
-#     matrix = suitesparse_benchmarks.real_matrices_sorted[k]
-#     print(matrix)
-
-#     path = paths.SUITESPARSE_PATH
-#     assert(path)
-#     if path[-1] == "/":
-#         path = path[:-1]
-    
-#     filename = f"{path}/{matrix}"
-#     A = io_coo.parse2D(filename)
-#     B = scipy.sparse.coo_matrix((A.data, (A.row, A.col)), shape=(A.N, A.M))
-#     del A
-
-#     test.run_idx_test(matrix, B, count, idx)
 
 def run_matrix_test(count, matrix_name, tests):
     path = paths.SUITESPARSE_PATH

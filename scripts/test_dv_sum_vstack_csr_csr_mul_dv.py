@@ -78,7 +78,7 @@ def f_equals(b, s, p):
 
 if __name__ == "__main__":
     tests = [
-        tester.Tester("cv_collapse_csr_mul_cv", "csr", process_burr, f_burrito, process_scipy, f_scipy, process_burr_unfused, f_burr_unfused, f_equals),
+        tester.Tester("cv_collapse_csr_mul_cv", "csr", process_burr, f_burrito, process_scipy, f_scipy, process_burr_unfused, f_burr_unfused, f_equals, is_unfused=True),
     ]
 
     tester.run_partition(10, 0, 1, tests)
