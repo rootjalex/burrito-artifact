@@ -2,6 +2,13 @@
 
 ## Installation
 
+#### Install Python
+For testing, we used Python 3.12.3, but theoretically, any Python version past 3.11 should work. To use 3.12.3 specifically (on MacOS), execute via [brew](https://brew.sh):
+```bash
+brew install python@3.12.3
+```
+Make sure to replace all uses of `python3` below with `python3.12` if you prefer to test specifically with the same version we tested with.
+
 #### Set up virtual environment
 First, make a Python virtual environment:
 ```bash
@@ -36,7 +43,7 @@ cd pyburrito
 cmake -S . -B build
 cmake --build build
 ```
-Note: if the above cmake commands cause issues, see [these build tips](https://nanobind.readthedocs.io/en/latest/basics.html#building-using-cmake).
+Note: if the above CMake commands cause issues, see [these build tips](https://nanobind.readthedocs.io/en/latest/basics.html#building-using-cmake).
 
 Also build the custom matrix reader package in io_coo:
 ```bash

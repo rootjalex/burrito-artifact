@@ -49,16 +49,9 @@ def f_equals(b, s, p):
            ((b != s).nnz == 0) and ((p != s).nnz == 0)
 
 if __name__ == "__main__":
-    assert(len(sys.argv) == 2)
-    _, matrix_name = sys.argv
-    test = tester.Tester("csr_slice_1d_csr_mul_csr", "csr", process_burr, f_burrito, process_scipy, f_scipy, process_burr_unfused, f_burr_unfused, f_equals)
-    path = paths.SUITESPARSE_PATH
-    filename = f"{path}/{matrix_name}"
-    import numpy as np
-    import time
-    print(f"Loading... {filename}")
-    t0 = time.time()
-    A = scipy.io.mmread(filename).astype(np.single)
-    t1 = time.time()
-    print(f"Load took {t1 - t0}s")
-    test.run_test(matrix_name, A, 10)
+    tests = [
+        tester.Tester("csr_slice_1d_csr_mul_csr", "csr", process_burr, f_burrito, process_scipy, f_scipy, process_burr_unfused, f_burr_unfused, f_equals),
+    ]
+
+    tester.run_partition(10, 0, 1, tests)
+    # tester.run_matrix_test(10, ???, tests)
