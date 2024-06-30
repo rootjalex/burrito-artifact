@@ -32,3 +32,6 @@ To define a compute kernel, and compile it into C++, we run the `compile` functi
 This will generate a header file with a templated (over tensor value type and index type) version of this function in `cv_concat_cv_cv.h`. Runtime types (e.g. for a compressed vector) are defined in [pyburrito/runtime.h](../pyburrito/runtime.h).
 
 The complete code for this example is in [example.rkt](example.rkt). Benchmark kernels for the paper are in [benchmarks.rkt](benchmarks.rkt).
+
+## Using untested data structures
+To use data structures not tested for this paper, [compile.rkt](../burrito/compile.rkt) will need to be updated to know the name of the new data structures, specifically the functions `extract-compressed-arrays`, which grabs pointers to the raw arrays stored in a data structure and `make-runtime-type`, which prints the name of the data structure.

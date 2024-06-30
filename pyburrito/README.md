@@ -4,7 +4,7 @@ The Burrito compiler generates C++ code that uses [nanobind](https://nanobind.re
 
 The Burrito extension file, [burrito.cpp](burrito.cpp) includes all the generated headers from [our benchmarks](../burrito/benchmarks.rkt). Note that this directory _will not compile_ if the benchmarks file has not been run from the root directory of this repository, as that file generates the headers included in [burrito.cpp](burrito.cpp).
 
-[runtime.h](runtime.h) defines the data structures we use for testing (e.g. COO, CSR, compressed vectors). Note: for generated code that does not use the data structures we tested, this file needs to be updated with their definitions. Note that [compile.rkt](../burrito/compile.rkt) will also need to be updated to know the name of the new data structures, specifically the functions `extract-compressed-arrays`, which grabs pointers to the raw arrays stored in a data structure and `make-runtime-type`, which prints the name of the data structure.
+[runtime.h](runtime.h) defines the data structures we use for testing (e.g. COO, CSR, compressed vectors). Note: for generated code that does not use the data structures we tested, this file needs to be updated with their definitions. [burrito.cpp](burrito.cpp) will also need to be updated to expose those data structures to Python, and the burrito compiler may need to be updated with their names (see the [compiler README](../burrito/README.md) for details on testing new sparse data structures).
 
 [unfused.h](unfused.h) provides thin C++ wrappers around the individual functions used for comparing to Burrito's unfused code generation.
 
