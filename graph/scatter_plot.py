@@ -276,8 +276,8 @@ if __name__ == "__main__":
         ("cv_collapse_coo", "C = collapse(COO)"),
         ("coo_hstack_coo_coo", "COO = hstack(COO, COO)"),
         ("coo_vstack_coo_coo", "COO = vstack(COO, COO)"),
-        ("csr_hstack_csr_csr", "CSR = hstack(CSR, CSR)"),
         ("csr_vstack_csr_csr", "CSR = vstack(CSR, CSR)"),
+        ("csr_hstack_csr_csr", "CSR = hstack(CSR, CSR)"),
         ("csr_slice_1d_csr", "CSR = slice(CSR)"),
 
         # portable
@@ -298,11 +298,11 @@ if __name__ == "__main__":
     # fusion
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    time_scatter_plot_fusion(data, "dv_sum_vstack_csr_csr_mul_dv", "D = sum(vstack(CSR, CSR) * D)", ax, suitesparse_dict, _key = "nnz")
+    time_scatter_plot_fusion(data, "cv_collapse_csr_mul_cv", "C = collapse(CSR) * C", ax, suitesparse_dict, _key = "nnz")
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    time_scatter_plot_fusion(data, "cv_collapse_csr_mul_cv", "C = collapse(CSR) * C", ax, suitesparse_dict, _key = "nnz")
+    time_scatter_plot_fusion(data, "dv_sum_vstack_csr_csr_mul_dv", "D = sum(vstack(CSR, CSR) * D)", ax, suitesparse_dict, _key = "nnz")
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
