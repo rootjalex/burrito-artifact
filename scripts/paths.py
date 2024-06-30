@@ -1,4 +1,4 @@
-PROJECTS_PATH = "/Users/ajroot/projects/burrito-artifact"
+PROJECTS_PATH = <REPLACE WITH PROJECT DIRECTORY PATH>
 BURRITO_PATH = f"{PROJECTS_PATH}/pyburrito/build"
 IO_COO_PATH = f"{PROJECTS_PATH}/io_coo/build"
-SUITESPARSE_PATH = f"/Users/ajroot/projects/suitesparse-reals"
+SUITESPARSE_PATH = f"{PROJECTS_PATH}/suitesparse"

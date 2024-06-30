@@ -55,7 +55,7 @@ cmake --build build
 ## Test
 
 #### Download Suitesparse
-Download the real-valued Suitesparse matrices (NOTE: this will take a long time, and a lot of bandwidth!):
+Download the real-valued Suitesparse matrices (NOTE: this will take a long time, and a lot of bandwidth! It took approximately two hours on our machine.):
 ```bash
 cd ../suitesparse
 chmod +x download_suitesparse_reals.sh
@@ -73,7 +73,7 @@ mkdir results
 ```
 
 #### Sequential testing
-If you're on a machine with Slurm, skip to the `Parallel Testing` section below. Otherwise, run the following commands (NOTE: this will take a very long time):
+If you're on a machine with Slurm, skip to the `Parallel Testing` section below. Otherwise, run the following commands (NOTE: this will take a very long time. On our machine, this takes over 24 hours.):
 ```bash
 cd scripts
 python3 partition_testing.py 0 1 &> ../results/out.txt
