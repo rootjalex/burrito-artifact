@@ -22,9 +22,9 @@ Our output array will have a logical size that is the sum of the two input sizes
 ```
 
 Now, to define the kernel we wish to compute, we can construct an expression representing the concatenation:
-```
-(define expr (Concat (Read A) (Read B) i j k))
 ```racket
+(define expr (Concat (Read A) (Read B) i j k))
+```
 To define a compute kernel, and compile it into C++, we run the `compile` function:
 ```racket
 (compile (Kernel C expr) "cv_concat_cv_cv" "cv_concat_cv_cv.h")
