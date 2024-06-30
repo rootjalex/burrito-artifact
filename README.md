@@ -10,7 +10,7 @@ brew install python@3.12.3
 Make sure to replace all uses of `python3` below with `python3.12` if you prefer to test specifically with the same version we tested with.
 
 #### Set up virtual environment
-First, make a Python virtual environment:
+Make a Python virtual environment for building and testing:
 ```bash
 python3 -m venv venv
 source venv/bin/activate
