@@ -4,3 +4,4 @@ sparse==0.15.1
 nanobind==2.0.0
 seaborn==0.13.2
 matplotlib==3.9.0
+pathlib==1.0.1

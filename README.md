@@ -84,8 +84,6 @@ chmod +x unzip_suitesparse_reals.sh
 ./unzip_suitesparse.sh
 ```
 
-Before running the testing script, you need to edit the first line of `scripts/paths.py` to point to this repository on your machine.
-
 Now, make a results directory.
 ```bash
 cd ..
