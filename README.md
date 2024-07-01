@@ -24,7 +24,7 @@ Make a Python virtual environment for building and testing:
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 #### Install Racket
@@ -96,6 +96,14 @@ If you're on a machine with Slurm, skip to the `Parallel Testing` section below.
 cd scripts
 python3 partition_testing.py 0 1 &> ../results/out.txt
 ```
+NOTE: if the testing scripts fail to import burrito (and/or io_coo), then please rebuild both packages with the following commands:
+```bash
+cd <pyburrito | io_coo>
+rm -rf build
+cmake -S . -B build -DPython_EXECUTABLE=<path to python executable>
+cmake --build build
+```
+And try the testing script again.
 
 #### Parallel Testing
 On a machine with many nodes, and slurm, the following testing scripts will attempt to balance test matrices across machines. Replace `<N>` with the number of parallel jobs to launch (e.g. 16).
