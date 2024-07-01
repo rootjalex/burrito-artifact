@@ -80,7 +80,7 @@ Download the real-valued Suitesparse matrices (NOTE: this will take a long time,
 cd ../suitesparse
 chmod +x download_suitesparse_reals.sh
 ./download_suitesparse_reals.sh
-chmod +x unzip_suitesparse_reals.sh
+chmod +x unzip_suitesparse.sh
 ./unzip_suitesparse.sh
 ```
 
