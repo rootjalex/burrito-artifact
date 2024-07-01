@@ -7,9 +7,10 @@ pyburrito/*.h
 !pyburrito/runtime.h
 !pyburrito/unfused.h
 
-# Don't include results files
+# Don't include result or matrix files
 results
 imgs
+suitesparse/*
 
 # Don't include virtual environment
 venv
