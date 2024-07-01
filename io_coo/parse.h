@@ -3,6 +3,7 @@
 #include <nanobind/stl/string.h>
 
 #include <cstdio>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <string>
