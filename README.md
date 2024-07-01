@@ -1,5 +1,15 @@
 # Burrito
 
+
+## TLDR;
+
+On MacOS (this was tested on an M1), run:
+```bash
+chmod +x run.sh
+./run.sh
+```
+This will execute all of the commands listed below, installing necessary packages and dependencies, compiling benchmarks, running the tests, and generating the paper figures in an `imgs/` directory. Read below for more details.
+
 ## Installation
 
 #### Install Python
