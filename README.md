@@ -18,7 +18,17 @@ pip install -r requirements.txt
 ```
 
 #### Install Racket
-You will need to [install racket](https://racket-lang.org/download/) to run the Burrito compiler.
+You will need to install [Racket](https://racket-lang.org) to run the Burrito compiler. Install via [brew](https://brew.sh):
+```bash
+brew install --cask racket
+```
+Alternatively, you can [download racket](https://racket-lang.org/download/), but you will likely need to edit your PATH to point to the install location's bin. We recommend using brew.
+
+Afterwards, please run the racket package manager to install [Rosette](https://docs.racket-lang.org/rosette-guide/):
+```bash
+raco pkg install rosette
+```
+Note: we do not use Rosette's synthesis features, just its pattern-matching functionality.
 
 #### Install CMake
 You will also need to install CMake. On MacOS, install via [brew](https://brew.sh):
