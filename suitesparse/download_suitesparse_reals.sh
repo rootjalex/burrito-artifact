@@ -6,11 +6,6 @@
 
 # Command: ./download_suitesparse_reals.sh
 
-outdir=$SUITESPARSE_PATH
-
-mkdir -p $outdir
-cd $outdir
-
 wget https://sparse.tamu.edu/MM/HB/1138_bus.tar.gz &
 wget https://sparse.tamu.edu/MM/HB/494_bus.tar.gz &
 wget https://sparse.tamu.edu/MM/HB/662_bus.tar.gz &

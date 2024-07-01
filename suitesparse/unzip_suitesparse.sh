@@ -6,8 +6,6 @@
 
 # From: https://github.com/weiya711/sam/blob/master/scripts/get_data/unpack_suitesparse.sh
 
-cd $SUITESPARSE_PATH
-
 for f in *.tar.gz; do
     tar -xvf "$f" --strip=1
     rm "$f"
