@@ -3,6 +3,7 @@ import scipy
 import sparse
 import numpy as np
 import sys
+import os
 
 import paths
 import suitesparse_benchmarks
@@ -235,6 +236,9 @@ def run_partition(count, k, m, tests):
 
     for matrix_name in matrices:
         filename = f"{path}/{matrix_name}"
+        if not os.path.exists(filename):
+            # Matrix wasn't downloaded, skip.
+            continue
         # A = scipy.io.mmread(filename).astype(np.single)
         # print(f"reading: {filename}", flush=True)
         # t0 = time.time()
