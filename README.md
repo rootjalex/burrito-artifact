@@ -22,7 +22,7 @@ You will need to install [Racket](https://racket-lang.org) to run the Burrito co
 ```bash
 brew install --cask racket
 ```
-Alternatively, you can [download racket](https://racket-lang.org/download/), but you will likely need to edit your PATH to point to the install location's bin. We recommend using brew.
+Alternatively, you can [download Racket](https://racket-lang.org/download/), but you will likely need to edit your PATH to point to the install location's bin. We recommend using brew.
 
 Afterwards, please run the racket package manager to install [Rosette](https://docs.racket-lang.org/rosette-guide/):
 ```bash
@@ -96,6 +96,11 @@ cd scripts
 chmod +x run_gen_partition.sh
 chmod +x run_partition.sh
 ./run_gen_partition.sh ../results <N>
+```
+Afterwards, please concatenate all result files into a single output file (the file that the plotting script looks for):
+```bash
+cd ..
+cat results/*.txt > results/out.txt
 ```
 
 #### Generating Plots
