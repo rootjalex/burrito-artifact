@@ -99,8 +99,7 @@ chmod +x run_partition.sh
 ```
 Afterwards, please concatenate all result files into a single output file (the file that the plotting script looks for):
 ```bash
-cd ..
-cat results/*.txt > results/out.txt
+cat ../results/*.txt > ../results/out.txt
 ```
 
 #### Generating Plots
