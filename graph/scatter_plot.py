@@ -5,6 +5,7 @@ import csv
 import scipy
 import math
 import sys
+from pathlib import Path
 
 import numpy as np
 
@@ -140,7 +141,9 @@ def time_scatter_plot(data, benchmark_name, title, ax, suitesparse_dict, _key = 
     # ax.set_xticks([])
     # plt.show()
     # plt.minorticks_off()
-    plt.savefig("imgs/" + benchmark_name + ".pdf", dpi=1000, bbox_inches="tight")
+    file_path = Path(__file__).resolve().parent.parent
+    img_file_path = str(file_path / ("imgs/" + benchmark_name + ".pdf"))
+    plt.savefig(img_file_path, dpi=1000, bbox_inches="tight")
     plt.clf()
 
 
@@ -260,16 +263,21 @@ def time_scatter_plot_fusion(data, benchmark_name, title, ax, suitesparse_dict, 
     # ax.set_xticks([])
     # plt.show()
     # plt.minorticks_off()
-    plt.savefig("imgs/" + benchmark_name + ".pdf", dpi=1000, bbox_inches="tight")
+    file_path = Path(__file__).resolve().parent.parent
+    img_file_path = str(file_path / ("imgs/" + benchmark_name + ".pdf"))
+    plt.savefig(img_file_path, dpi=1000, bbox_inches="tight")
     plt.clf()
 
 
 
 if __name__ == "__main__":
     print("Parsing data...", file=sys.stderr)
-    suitesparse_dict = parse_file_dict("suitesparse/suitesparse_stats.csv", ["nnz", "Sparsity", "Size", "N", "M"])
+    file_path = Path(__file__).resolve().parent.parent
+    suitesparse_file_path = str(file_path / "suitesparse/suitesparse_stats.csv")
+    suitesparse_dict = parse_file_dict(suitesparse_file_path, ["nnz", "Sparsity", "Size", "N", "M"])
 
-    data = get_data("results/out.txt")
+    results_file_path = str(file_path / "results/out.txt")
+    data = get_data(results_file_path)
 
     plots = [
         # handwritten
