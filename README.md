@@ -64,7 +64,7 @@ cmake --build build
 
 ## Test
 
-#### Download Suitesparse (>2 hours on MacBook Pro M2)
+#### Download Suitesparse (>2 hours on MacBook Pro M1)
 Download the real-valued Suitesparse matrices:
 ```bash
 cd ../suitesparse
@@ -80,7 +80,7 @@ cd ..
 mkdir results
 ```
 
-#### Sequential testing (>24 hours on MacBook Pro M2)
+#### Sequential testing (>24 hours on MacBook Pro M1)
 If you're on a machine with Slurm, skip to the `Parallel Testing` section below. Otherwise, run the following commands:
 ```bash
 cd scripts
