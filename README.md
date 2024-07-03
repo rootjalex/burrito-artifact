@@ -64,7 +64,7 @@ cmake --build build
 
 ## Test
 
-#### Download Suitesparse (> 2 hours on MacBook Pro M2)
+#### Download Suitesparse (>2 hours on MacBook Pro M2)
 Download the real-valued Suitesparse matrices:
 ```bash
 cd ../suitesparse
