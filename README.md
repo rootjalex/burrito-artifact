@@ -2,6 +2,11 @@
 
 ## Installation
 
+Burrito was developed and tested on a Mac M1, but is not machine-specific. We provide detailed instructions for installation on MacOS, but see below for a brief list of instructions for Ubuntu installation (tldr; replace `brew install` with `apt-get`).
+
+
+### MacOS Installation
+
 #### Install Python
 For testing, we used Python 3.12.3, but theoretically, any Python version past 3.11 should work. To use 3.12.3 specifically (on MacOS), execute via [brew](https://brew.sh):
 ```bash
@@ -28,6 +33,7 @@ Afterwards, please run the racket package manager to install [Rosette](https://d
 ```bash
 raco pkg install rosette
 ```
+If this command reports that z3 is not installed, please run `brew install z3` to install the [z3 Theorem Prover](https://github.com/Z3Prover/z3), a dependency of Rosette.
 Note: we do not use Rosette's synthesis features, just its pattern-matching functionality.
 
 #### Install CMake
@@ -36,6 +42,25 @@ You will also need to install CMake. On MacOS, install via [brew](https://brew.s
 brew install cmake
 ```
 Note: We built and tested with version 3.29.2, but any CMake version above 3.27 should work for building the Python bindings.
+
+
+### Ubuntu Installation
+
+```bash
+# Install Python
+apt-get install python3 python3-venv
+# Activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+python3 -m pip install -r requirements.txt
+# Install Racket and Rosette (which depends on z3)
+apt-get install racket z3
+raco pkg install rosette
+# Install CMake and a C++ compiler.
+apt-get install cmake g++
+```
+
+If `raco pkg install rosette` fails with an `ssl-make-client-context` error, run `apt-get install openssl libssl-dev` and then re-try.
 
 
 ## Build
