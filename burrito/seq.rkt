@@ -227,6 +227,8 @@
     [(Concatenate a b)
       (let ([x (simplify a defs)] [y (simplify b defs)])
         (cond
+          [(and (Empty? x) (Empty? y)) (Empty (size expr))]
+          [(and (Full? x) (Full? y)) (Full (size expr))]
           [(or (Full? x) (Empty? x)) (Offset (size a) y)]
           [(or (Full? y) (Empty? y)) (Pad x (size b))]
           [else (Concatenate x y)]))]
